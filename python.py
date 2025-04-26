@@ -39,6 +39,23 @@ class Library:
             else:
                 print(f"{title} is not borrowed")
                 return
+    def search_book_by_author(self,author):
+        found=False
+        for book in self.books:
+            if book.author.lower()==author.lower():
+                print(book)
+                found=True
+        if not found:
+            print("no book found on the name of the author")
+    def search_book_by_title(self,title):
+        found=False
+        for book in self.books:
+            if book.title==title:
+                print(book)
+                found=True
+        if not found:
+            print("Book is not found")
+
 library=Library()
 library.add_books(Book('SS Rajamouli','RRR',10))
 library.add_books(Book('Sukumar','Puspha',10))
@@ -47,3 +64,5 @@ library.display_books()
 library.borrow_book('RRR')
 library.return_book('RRR')
 library.return_book('Puspha')
+library.search_book_by_author('SS Rajamouli')
+library.search_book_by_title('Puspha')

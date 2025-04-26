@@ -12,6 +12,7 @@ class Book:
 class Library:
     def __init__(self):
         self.books=[]
+        self.borrow_books=[]
     def add_books(self,book):
         self.books.append(book)
     def display_books(self):
@@ -27,6 +28,7 @@ class Library:
                     book.copies-=1
                     print(f"you have successfully borrowed {title}")
                     print(f"{book.copies} is left")
+                    self.borrow_books.append(book)
                 else:
                     print(f"{title} is not available")
     def return_book(self,title):
@@ -35,10 +37,10 @@ class Library:
                 book.copies+=1
                 print(f"{title} is returned")
                 print(f"Total copies: {book.copies}")
-                return
+                self.borrow_books.remove(book)
             else:
                 print(f"{title} is not borrowed")
-                return
+            return
     def search_book_by_author(self,author):
         found=False
         for book in self.books:
@@ -50,19 +52,56 @@ class Library:
     def search_book_by_title(self,title):
         found=False
         for book in self.books:
-            if book.title==title:
+            if book.title.lower()==title.lower():
                 print(book)
                 found=True
         if not found:
             print("Book is not found")
+    def display_Not_return_books(self):
+        found=False
+        print("borrowed books are:")
+        for book in self.borrow_books:
+            print(book)
+            found=True
+        if not found:
+            print("no books are borrowed")
+    
 
-library=Library()
-library.add_books(Book('SS Rajamouli','RRR',10))
-library.add_books(Book('Sukumar','Puspha',10))
-library.add_books(Book('Prashanth Neel','Salaar',10))
-library.display_books()
-library.borrow_book('RRR')
-library.return_book('RRR')
-library.return_book('Puspha')
-library.search_book_by_author('SS Rajamouli')
-library.search_book_by_title('Puspha')
+def main():
+    print("1-Add Books")
+    print("2-Display Books")
+    print("3-Borrow Book")
+    print("4-Return Book")
+    print("5-Search book by author")
+    print("6-Search book by title")
+    print("7-Display Not return books")
+    print("8-Exit")
+    library=Library()
+    while True:
+        a=int(input("Enter a correct number(1-8): "))
+        if a==1:
+            title=input("Enter the title of the book: ")
+            author=input("Enter the author of the book: ")
+            copies=int(input("Enter number of copies are there: "))
+            library.add_books(Book(author,title,copies))
+        elif a==2:
+            library.display_books()
+        elif a==3:
+            title=input("enter the title of the book: ")
+            library.borrow_book(title)
+        elif a==4:
+            title=input("enter the title of the book: ")
+            library.return_book(title)
+        elif a==5:
+            author=input("enter the author of the book: ")
+            library.search_book_by_author(author)
+        elif a==6:
+            title=input("enter the title of book: ")
+            library.search_book_by_title(title)
+        elif a==7:
+            library.display_Not_return_books()
+        elif a==8:
+            break
+        else:
+            print("enter the correct choice")
+main()

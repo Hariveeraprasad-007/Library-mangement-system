@@ -65,8 +65,28 @@ class Library:
             found=True
         if not found:
             print("no books are borrowed")
-    
-
+class   User:
+    def __init__(self,username,password):
+        self.username=username
+        self.password=password
+        self.borrow_books=[]
+    def display_user_books(self):
+        print("Borrowed Books: ")
+        for book in self.borrow_books:
+            print(book)
+class Usermanager:
+    def __init__(self):
+        self.users={}
+    def register(self,username,passowrd):
+        if username in self.user:
+            print("The username exists")
+        else:
+            self.users[username]=User(username,passowrd)
+    def login(self,username,passowrd):
+        if username in self.users and self.users[username].password==passowrd:
+            print("you have logged successfully")
+        else:
+            print("Invalid username or password.check it whether you have registered or not")
 def main():
     print("1-Add Books")
     print("2-Display Books")
@@ -78,30 +98,36 @@ def main():
     print("8-Exit")
     library=Library()
     while True:
-        a=int(input("Enter a correct number(1-8): "))
-        if a==1:
-            title=input("Enter the title of the book: ")
-            author=input("Enter the author of the book: ")
-            copies=int(input("Enter number of copies are there: "))
-            library.add_books(Book(author,title,copies))
-        elif a==2:
-            library.display_books()
-        elif a==3:
-            title=input("enter the title of the book: ")
-            library.borrow_book(title)
-        elif a==4:
-            title=input("enter the title of the book: ")
-            library.return_book(title)
-        elif a==5:
-            author=input("enter the author of the book: ")
-            library.search_book_by_author(author)
-        elif a==6:
-            title=input("enter the title of book: ")
-            library.search_book_by_title(title)
-        elif a==7:
-            library.display_Not_return_books()
-        elif a==8:
-            break
-        else:
-            print("enter the correct choice")
+        try:
+            a=int(input("Enter a correct number(1-8): "))
+            if a==1:
+                title=input("Enter the title of the book: ")
+                author=input("Enter the author of the book: ")
+                try:
+                    copies=int(input("Enter number of copies are there: "))
+                    library.add_books(Book(author,title,copies))
+                except ValueError:
+                    print("enter the vaaild input for no of copies")
+            elif a==2:
+                library.display_books()
+            elif a==3:
+                title=input("enter the title of the book: ")
+                library.borrow_book(title)
+            elif a==4:
+                title=input("enter the title of the book: ")
+                library.return_book(title)
+            elif a==5:
+                author=input("enter the author of the book: ")
+                library.search_book_by_author(author)
+            elif a==6:
+                title=input("enter the title of book: ")
+                library.search_book_by_title(title)
+            elif a==7:
+                library.display_Not_return_books()
+            elif a==8:
+                break
+            else:
+                print("enter the correct choice")
+        except ValueError:
+            print("Enter the valid input for picking choices")
 main()

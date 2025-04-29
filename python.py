@@ -21,7 +21,8 @@ class Library:
         else:
             for book in self.books:
                 print(book)
-    def borrow_book(self,title):
+    def borrow_book(self,title,user):
+        found=False
         for book in self.books:
             if book.title.lower()==title.lower():
                 if book.is_available:
@@ -29,18 +30,20 @@ class Library:
                     print(f"you have successfully borrowed {title}")
                     print(f"{book.copies} is left")
                     self.borrow_books.append(book)
-                else:
-                    print(f"{title} is not available")
-    def return_book(self,title):
+                    user.borrow_books.append(book)
+                    found=True
+        if not found:
+            print("the book is not found in library")
+    def return_book(self,title,user):
         for book in self.books:
             if book.title.lower()==title.lower():
                 book.copies+=1
                 print(f"{title} is returned")
                 print(f"Total copies: {book.copies}")
                 self.borrow_books.remove(book)
+                user.borrow_books.remove(book)
             else:
                 print(f"{title} is not borrowed")
-            return
     def search_book_by_author(self,author):
         found=False
         for book in self.books:
@@ -78,13 +81,14 @@ class Usermanager:
     def __init__(self):
         self.users={}
     def register(self,username,passowrd):
-        if username in self.user:
+        if username in self.users:
             print("The username exists")
         else:
             self.users[username]=User(username,passowrd)
     def login(self,username,passowrd):
         if username in self.users and self.users[username].password==passowrd:
             print("you have logged successfully")
+            return self.users[username]
         else:
             print("Invalid username or password.check it whether you have registered or not")
 def main():

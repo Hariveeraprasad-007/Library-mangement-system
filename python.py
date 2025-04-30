@@ -3,6 +3,7 @@ class Book:
         self.title=title
         self.author=author
         self.copies=copies
+        self.reservations={}
     @property
     def is_available(self):
         return self.copies>0
@@ -68,6 +69,26 @@ class Library:
             found=True
         if not found:
             print("no books are borrowed")
+    def reserve_book(self, title, user):
+        found = False
+        for book in self.books:
+            if book.title.lower() == title.lower():
+                found = True
+                if not book.is_available:
+                    if user.username not in book.reservations:
+                        book.reservations[user.username] = title
+                        print(f"{title} is reserved by {user.username}")
+                    else:
+                        print(f"{title} is already reserved by {user.username}")
+                else:
+                    print("The book is available; you can borrow it")
+        if not found:
+            print("There is no book in the library with that title")
+
+    def reserved_books(self):
+        for book in self.books:
+            for user, title in book.reservations.items():
+                print(f"{user}: {title}")
 class   User:
     def __init__(self,username,password):
         self.username=username
@@ -92,46 +113,61 @@ class Usermanager:
         else:
             print("Invalid username or password.check it whether you have registered or not")
 def main():
-    print("1-Add Books")
-    print("2-Display Books")
-    print("3-Borrow Book")
-    print("4-Return Book")
-    print("5-Search book by author")
-    print("6-Search book by title")
-    print("7-Display Not return books")
-    print("8-Exit")
-    library=Library()
+    library = Library()
+    user_manager = UserManager()
+
+    print("Welcome to the Library System")
+    current_user = None
+
+    while not current_user:
+        choice = input("Do you want to (1) Register or (2) Login? ")
+        if choice == "1":
+            uname = input("Enter username: ")
+            pwd = input("Enter password: ")
+            user_manager.register(uname, pwd)
+        elif choice == "2":
+            uname = input("Enter username: ")
+            pwd = input("Enter password: ")
+            current_user = user_manager.login(uname, pwd)
+
     while True:
+        print("\n1-Add Books\n2-Display Books\n3-Borrow Book\n4-Return Book\n5-Search by Author\n6-Search by Title\n7-Display Not Returned Books\n8-Reserve Book\n9-View Reserved Books\n10-My Books\n11-Exit")
         try:
-            a=int(input("Enter a correct number(1-8): "))
-            if a==1:
-                title=input("Enter the title of the book: ")
-                author=input("Enter the author of the book: ")
-                try:
-                    copies=int(input("Enter number of copies are there: "))
-                    library.add_books(Book(author,title,copies))
-                except ValueError:
-                    print("enter the vaaild input for no of copies")
-            elif a==2:
+            a = int(input("Enter your choice: "))
+            if a == 1:
+                title = input("Title: ")
+                author = input("Author: ")
+                copies = int(input("Copies: "))
+                library.add_books(Book(author, title, copies))
+            elif a == 2:
                 library.display_books()
-            elif a==3:
-                title=input("enter the title of the book: ")
-                library.borrow_book(title)
-            elif a==4:
-                title=input("enter the title of the book: ")
-                library.return_book(title)
-            elif a==5:
-                author=input("enter the author of the book: ")
+            elif a == 3:
+                title = input("Enter book title: ")
+                library.borrow_book(title, current_user)
+            elif a == 4:
+                title = input("Enter book title: ")
+                library.return_book(title, current_user)
+            elif a == 5:
+                author = input("Enter author name: ")
                 library.search_book_by_author(author)
-            elif a==6:
-                title=input("enter the title of book: ")
+            elif a == 6:
+                title = input("Enter book title: ")
                 library.search_book_by_title(title)
-            elif a==7:
+            elif a == 7:
                 library.display_Not_return_books()
-            elif a==8:
+            elif a == 8:
+                title = input("Enter book title: ")
+                library.reserve_book(title, current_user)
+            elif a == 9:
+                library.reserved_books()
+            elif a == 10:
+                current_user.display_user_books()
+            elif a == 11:
+                print("Exiting... Goodbye!")
                 break
             else:
-                print("enter the correct choice")
+                print("Enter a valid choice")
         except ValueError:
-            print("Enter the valid input for picking choices")
+            print("Invalid input")
+
 main()
